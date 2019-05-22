@@ -12,6 +12,7 @@ E.g., a particle of mass 1.0079E-3 kg corresponds to "H" (Hydrogen).
 In our mass spectrometer simulation, the particle starts from rest. 
 You can determine the magnitude and sign of the particle's charge
 as well as the magnitude and direction of the electric field and magnetic field.
+Ignore gravitational effects.
 
 For an actual mass spectometer, the precise charge of each particle is unknown;
 instead, one determines the mass-to-charge ratio. Additionally, not all the particles
