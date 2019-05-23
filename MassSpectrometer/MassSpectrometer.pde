@@ -1,12 +1,15 @@
-import Math.java;
+
 
 float x = 10;
 float y = 300;
-float a = 1;   // acceleration of the particle 
+float a = 5;   // acceleration of the particle 
 float B = 1;   // magnitude and direction of B field
 float E = 1;   // magnitude and direction of E field
 float q = 1;   // magnitude and sign of charge
-float r;       // radius of circular motion
+float r = 10;       // radius of circular motion
+float radian = 0;
+float z = map(millis()%10000,0,10000,0,TWO_PI);
+
 
 public void setup()
 {
@@ -21,17 +24,12 @@ public void draw()
   // constant acceleration in the x-direction
   // for a uniform electric field
   if (x < 420)
-    x = x + (.5)(a)(.001);   // t^2 = (.001) change after checking frames per second
-    
+    x = x + (.5*a);   // t^2 = (.001) change after checking frames per second
+  if (x>=420 && B!=0 && radian<=3.1415926){   
   // circular motion in a uniform magnetic field
-  float radian;
-  if (x >= 420 && B != 0) {
-    if (B > 0)      // B field is out of the page
-      rad = ;
-    else if (B < 0) // B field is into the page
-      rad = ;
-    x = 420 + (r * Math.cos(radian));
-    y = 300 + (r * Math.cos(radian));
+    radian = radian + 3.1415926/12;
+    x = x + (r * cos(radian));
+    y = y + (r * sin(radian));
   }
 }
 
