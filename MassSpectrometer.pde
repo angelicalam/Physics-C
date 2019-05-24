@@ -20,6 +20,7 @@ public void setup()
   E = 0;
   B = 0;
   q = 1;
+  m = .001; // may remove later
 }
 
 double v;       // for proportional incrementation of radian
@@ -44,7 +45,8 @@ public void draw()
     // constant acceleration in the x-direction
     // for a uniform electric field
     // no movement for E field = 0
-    if (x < 420 && E!= 0)
+    if (x < 420 && y == 300 E!= 0)
+    {
       // acceleration is x1000 smaller since 1000 = 1 meter
       // slows down the animation
       // t/frameRate aligns draw() with real time
@@ -52,9 +54,10 @@ public void draw()
       a = (E*q/m);
       x = 10 + (.5)(a)(t/frameRate)(t/frameRate);
       t++;
+    }
     
     // circular motion in a uniform magnetic field
-    if (x >= 420 && B != 0)
+    else if (x >= 420 && B != 0)
     {
       // 0.4 is separation between the E field plates
       // 1000 scales r from meters to program's dimensions
@@ -82,11 +85,20 @@ public void draw()
     }
     
     // constant velocity if there is no magnetic field
-    else
+    else if (B == 0 && x >= 420)
     {
       v = sqrt( 2*E*q*0.4 / m );
       x = x + v(1/frameRate);
     }
+    
+    // display distance along plate traveled by particle
+    else
+    {
+      line(385,300,395,300);
+      line(390,300,390,y);
+      line(385,y,395,y);
+      text(String.format("%.2f", 2*(r/1000)) + " m", 350,y/2);
+    }   
   }
   
   else
@@ -138,11 +150,31 @@ public void plate()
 // draws E field    delete this part of the comment later: make lines light grey, white clashes with the particle color
 public void displayEField()
 {
+  stroke(200);
+  for(int n = 100; n < 1000; n += 100)
+    line(0,n,400,n);
 }
 
 // draws B field    delete this part of the comment later: same as above, make markings grey
 public void displayBField()
 {
+  stroke(200);
+  for(int r = 100; r < 1000; r += 100) {
+    for(int c = 470; c < 800; c += 100) {
+      fill(200);
+      if (B > 0)
+      {
+        ellipse(c,r,10,10);
+        fill(0);
+        ellipse(c,r,15,15)
+      }
+      else if (B < 0)
+      {
+        line(c-10, r+10, c+10, r-10);
+        line(c-10, r-10, c+10, r+10);
+      }
+    }
+  }
 }
 
 // changes value of E and B
@@ -199,4 +231,11 @@ public void displayBSlider()
   text("Magnetic field: " + String.format("%.2f",B) + " T", 820,260);
 }
 
+/*
+Ignore for now
+--------------
+2d array: A-Z and masses
+getCode()
+getMass()
+*/
 
