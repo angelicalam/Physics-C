@@ -1,4 +1,5 @@
 // may have to change to floats if using Processing's cos(), sin(), etc.
+// otherwise import java.lang.Math (sorry, wrong import statement before)
 double x;
 double y;
 double a;   // acceleration of the particle 
@@ -79,9 +80,9 @@ public void draw()
       x = 420 + (r * cos(radian));
       t2++;
     }
-  
+    
     // constant velocity if there is no magnetic field
-    else 
+    else
     {
       v = sqrt( 2*E*q*0.4 / m );
       x = x + v(1/frameRate);
@@ -147,14 +148,21 @@ public void displayBField()
 // changes value of E and B
 public void mouseDragged()
 {
-  if (mouseX > 805 && mouseX < 975 && mouseY > 140 && mouseY < 170)
+  // can't allow E to affect r and v when particle is in B field, so x < 400
+  if (mouseX > 805 && mouseX < 975 && mouseY > 140 && mouseY < 170 && x < 400)
   {
-    // can't allow E to affect r and v when particle is in B field
-    if (x < 400)
+    if (mouseX > pmouseX && E < maxE)
       E = E + 0.1;  // change increment later
+    else if (mouseX < pmouseX && E > 0)
+      E = E - 0.1;
   }
   else if (mouseX > 805 && mouseX < 975 && mouseY > 350 && mouseY < 380)
-    B = B + 0.01; // change increment later
+  {
+    if (mouseX > pmouseX && B < maxB)
+      B = B + 0.01;  // change increment later
+    else if (mouseX < pmouseX && B > (-1)maxB)
+      B = B - 0.01;
+  }
 }
 
 // draws slider for E field magnitude
