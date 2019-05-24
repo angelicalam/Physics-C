@@ -23,6 +23,7 @@ double radian;  // for circular motion
 
 public void draw()
 {
+  resetButton();
   plate();
   displayEField();
   displayBField();
