@@ -20,6 +20,7 @@ public void setup()
 }
 
 double radian;  // for circular motion
+double t = 0;   // time counter for accelerating particle
 
 public void draw()
 {
@@ -38,11 +39,13 @@ public void draw()
     // constant acceleration in the x-direction
     // for a uniform electric field
     // no movement for E field = 0
+    a = (E*q/m);
     if (x < 420 && E!= 0)
-      x = x + (.5)(a)(.001);   // t^2 = (.001) change after checking frames per second
+      x = x + (.5)(a)(t/frameRate);
+      t++;
     
     // circular motion in a uniform magnetic field
-    r = getRadius();
+    r = Math.sqrt( (2*E*0.4*m)/(B*B*q) );
     if (x >= 420 && B != 0)
     {
       if (B > 0)      // B field is out of the page
@@ -158,11 +161,4 @@ public void displayBSlider()
   text("Magnetic field: " + String.format("%.2f",B) + " T", 820,260);
 }
 
-// calculates radius of circular motion in the magnetic field
-public double getRadius()
-{
-  // 0.4 is the distance across which the E field acts on the particle
-  r = Math.sqrt( (2*E*0.4*m)/(B*B*q) );
-  return r;
-}
 
