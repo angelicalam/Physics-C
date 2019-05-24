@@ -39,19 +39,25 @@ public void draw()
     // constant acceleration in the x-direction
     // for a uniform electric field
     // no movement for E field = 0
-    a = (E*q/m);
     if (x < 420 && E!= 0)
-      x = x + (.5)(a)(t/frameRate);
+      // acceleration is x1000 smaller since 1000 = 1 meter
+      // t/frameRate aligns draw() with real time
+      a = (E*q/m);
+      x = x + (.5)(a)(t/frameRate)(t/frameRate);
       t++;
     
     // circular motion in a uniform magnetic field
-    r = Math.sqrt( (2*E*0.4*m)/(B*B*q) );
+    r = Math.sqrt( (2*E*0.4*m)/(B*B*q) * 1000);
+    v = 
     if (x >= 420 && B != 0)
     {
-      if (B > 0)      // B field is out of the page
-        radian = ;
-      else if (B < 0) // B field is into the page
-        radian = ;
+      // B field is out of the page
+      if (B > 0)
+        radian = radian + ;
+      // B field is into the page
+      else if (B < 0)
+        radian = radian + ;
+      // parametric equations for circular motion
       x = 420 + (r * Math.cos(radian));
       y = 300 + (r * Math.cos(radian));
     }
@@ -97,6 +103,7 @@ public void reset()
   B = 1;
   E = 1;
   q = 1;
+  t = 0;
   radian = 0;
 }
 
@@ -122,7 +129,10 @@ public void displayBField()
 public void mouseDragged()
 {
   if (mouseX > 805 && mouseX < 975 && mouseY > 140 && mouseY < 170)
-    E = E + 0.1;  // change increment later
+  {
+    if (x < 400)  // r and v shouldn't be affected by E in B field
+      E = E + 0.1;  // change increment later
+  }
   else if (mouseX > 805 && mouseX < 975 && mouseY > 350 && mouseY < 380)
     B = B + 0.01; // change increment later
 }
