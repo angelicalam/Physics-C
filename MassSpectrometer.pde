@@ -1,5 +1,4 @@
-import Math.java;
-
+// may have to change to floats if using Processing's cos(), sin(), etc.
 double x;
 double y;
 double a;   // acceleration of the particle 
@@ -16,11 +15,16 @@ boolean isRunning = false;  //particle only moves if isRunning
 
 public void setup()
 {
-  size(1000, 600);
+  size(1000, 1000);
+  E = 0;
+  B = 0;
+  q = 1;
 }
 
+double v;       // for proportional incrementation of radian
 double radian;  // for circular motion
-double t = 0;   // time counter for accelerating particle
+double t = 0;   // time counter for E field
+double t2 = 0;  // time counter for B field
 
 public void draw()
 {
@@ -41,31 +45,46 @@ public void draw()
     // no movement for E field = 0
     if (x < 420 && E!= 0)
       // acceleration is x1000 smaller since 1000 = 1 meter
+      // slows down the animation
       // t/frameRate aligns draw() with real time
+      // 10 is initial x-position of particle
       a = (E*q/m);
-      x = x + (.5)(a)(t/frameRate)(t/frameRate);
+      x = 10 + (.5)(a)(t/frameRate)(t/frameRate);
       t++;
     
     // circular motion in a uniform magnetic field
-    r = Math.sqrt( (2*E*0.4*m)/(B*B*q) * 1000);
-    v = 
     if (x >= 420 && B != 0)
     {
+      // 0.4 is separation between the E field plates
+      // 1000 scales r from meters to program's dimensions
+      r = sqrt( (2*E*0.4*m)/(B*B*q) * 1000);
+      // velocity is x1000 smaller to slow down animation
+      v = sqrt( 2*E*q*0.4 / m );
       // B field is out of the page
+      // Center of circular motion is (420, 300 + r)
+      // radians decrease linearly with time
       if (B > 0)
-        radian = radian + ;
+      {
+        radian = radian - (v/r)(t2/frameRate);
+        y = (300 + r) - (r * sin(radian));
+      }
       // B field is into the page
-      else if (B < 0)
-        radian = radian + ;
-      // parametric equations for circular motion
-      x = 420 + (r * Math.cos(radian));
-      y = 300 + (r * Math.cos(radian));
+      // Center of circular motion is (420, 300 - r)
+      // radians increase linearly with time
+      else
+      {
+        radian = radian + (v/r)(t2/frameRate);
+        y = (300 - r) + (r * sin(radian));
+      }
+      x = 420 + (r * cos(radian));
+      t2++;
     }
   
     // constant velocity if there is no magnetic field
     else 
     {
-      x = x + ;
+      v = sqrt( 2*E*q*0.4 / m );
+      x = x + v(1/frameRate);
     }
   }
   
@@ -99,12 +118,12 @@ public void reset()
 {
   x = 10;
   y = 300;
-  a = 1;
-  B = 1;
-  E = 1;
-  q = 1;
   t = 0;
-  radian = 0;
+  t2 = 0;
+  if (B > 0)
+    radian = PI/2;
+  else
+    radian = (-1)PI/2;
 }
 
 // draws plate separating the electric field and magnetic field
@@ -130,7 +149,8 @@ public void mouseDragged()
 {
   if (mouseX > 805 && mouseX < 975 && mouseY > 140 && mouseY < 170)
   {
-    if (x < 400)  // r and v shouldn't be affected by E in B field
+    // can't allow E to affect r and v when particle is in B field
+    if (x < 400)
       E = E + 0.1;  // change increment later
   }
   else if (mouseX > 805 && mouseX < 975 && mouseY > 350 && mouseY < 380)
