@@ -1,5 +1,5 @@
-// may have to change to floats if using Processing's cos(), sin(), etc.
-// otherwise import java.lang.Math (sorry, wrong import statement before)
+import java.lang.Math;
+
 double x;
 double y;
 double a;   // acceleration of the particle 
@@ -10,13 +10,13 @@ double r;   // radius of circular motion
 double m;   // mass of the particle
 
 final static double maxE = 10;  // maximum magnitude of E field
-final static double maxB = .1;  // maximum magnitude of B field
+final static double maxB = 1;   // maximum magnitude of B field
 
 boolean isRunning = false;  //particle only moves if isRunning
 
 public void setup()
 {
-  size(1000, 1000);
+  size(1000, 800);
   E = 0;
   B = 0;
   q = 1;
@@ -30,8 +30,8 @@ double t2 = 0;  // time counter for B field
 
 public void draw()
 {
-  resetButton();
   plate();
+  resetButton();
   displayEField();
   displayBField();
   displayESlider();
@@ -45,15 +45,18 @@ public void draw()
     // constant acceleration in the x-direction
     // for a uniform electric field
     // no movement for E field = 0
-    if (x < 420 && y == 300 E!= 0)
+    if (x < 420 && y == 300 && E!= 0)
     {
       // acceleration is x1000 smaller since 1000 = 1 meter
       // slows down the animation
       // t/frameRate aligns draw() with real time
       // 10 is initial x-position of particle
-      a = (E*q/m);
-      x = 10 + (.5)(a)(t/frameRate)(t/frameRate);
+      a = E*q/m;
+      x = 10 + .5*(a)*(t/frameRate)*(t/frameRate);
       t++;
+      // smooths transition from E field to B field
+      if (x > 420)
+        x = 420;
     }
     
     // circular motion in a uniform magnetic field
@@ -61,43 +64,47 @@ public void draw()
     {
       // 0.4 is separation between the E field plates
       // 1000 scales r from meters to program's dimensions
-      r = sqrt( (2*E*0.4*m)/(B*B*q) * 1000);
-      // velocity is x1000 smaller to slow down animation
-      v = sqrt( 2*E*q*0.4 / m );
+      r = Math.sqrt( (2*E*.4*m)/(B*B*q) * 1000);
+      // velocity is x100 smaller to slow down animation
+      v = Math.sqrt( 2*E*q*.4 / m ) * 10;
       // B field is out of the page
       // Center of circular motion is (420, 300 + r)
       // radians decrease linearly with time
       if (B > 0)
       {
-        radian = radian - (v/r)(t2/frameRate);
-        y = (300 + r) - (r * sin(radian));
+        radian = radian - (v/r)*(t2/frameRate);
+        y = (300 + r) - (r * Math.sin(radian));
       }
       // B field is into the page
       // Center of circular motion is (420, 300 - r)
       // radians increase linearly with time
       else
       {
-        radian = radian + (v/r)(t2/frameRate);
-        y = (300 - r) + (r * sin(radian));
+        radian = radian + (v/r)*(t2/frameRate);
+        y = (300 - r) + (r * Math.sin(radian));
       }
-      x = 420 + (r * cos(radian));
+      x = 420 + (r * Math.cos(radian));
       t2++;
+      // stops particle from passing through the plate
+      if (x < 420)
+        x = 419;
     }
     
     // constant velocity if there is no magnetic field
     else if (B == 0 && x >= 420)
     {
-      v = sqrt( 2*E*q*0.4 / m );
-      x = x + v(1/frameRate);
+      // velocity is x50 smaller
+      v = Math.sqrt( 2*E*q*0.4 / m ) * 20;
+      x = x + (v)*(1/frameRate);
     }
     
     // display distance along plate traveled by particle
     else
     {
       line(385,300,395,300);
-      line(390,300,390,y);
-      line(385,y,395,y);
-      text(String.format("%.2f", 2*(r/1000)) + " m", 350,y/2);
+      line(390,300,390,(float)y);
+      line(385,(float)y,395,(float)y);
+      text(String.format("%.2f", 2*(r/1000)) + " m", 350,(float)(y/2));
     }   
   }
   
@@ -134,15 +141,16 @@ public void reset()
   t = 0;
   t2 = 0;
   if (B > 0)
-    radian = PI/2;
+    radian = Math.PI/2;
   else
-    radian = (-1)PI/2;
+    radian = (-1)*Math.PI/2;
 }
 
 // draws plate separating the electric field and magnetic field
 public void plate()
 {
   background(0);
+  fill(255);
   rect(400,0,20,280);
   rect(400,320,20,280);
 }
@@ -166,7 +174,7 @@ public void displayBField()
       {
         ellipse(c,r,10,10);
         fill(0);
-        ellipse(c,r,15,15)
+        ellipse(c,r,15,15);
       }
       else if (B < 0)
       {
@@ -178,21 +186,22 @@ public void displayBField()
 }
 
 // changes value of E and B
+double delta;
 public void mouseDragged()
 {
   // can't allow E to affect r and v when particle is in B field, so x < 400
   if (mouseX > 805 && mouseX < 975 && mouseY > 140 && mouseY < 170 && x < 400)
   {
     if (mouseX > pmouseX && E < maxE)
-      E = E + 0.1;  // change increment later
+      E = E + 0.05;
     else if (mouseX < pmouseX && E > 0)
-      E = E - 0.1;
+      E = E - 0.05;
   }
   else if (mouseX > 805 && mouseX < 975 && mouseY > 350 && mouseY < 380)
   {
     if (mouseX > pmouseX && B < maxB)
-      B = B + 0.01;  // change increment later
-    else if (mouseX < pmouseX && B > (-1)maxB)
+      B = B + 0.01;
+    else if (mouseX < pmouseX && B > (-1)*maxB)
       B = B - 0.01;
   }
 }
@@ -204,11 +213,11 @@ public void displayESlider()
   stroke(255);
   fill(0);
   rect(800,20,180,200);
-  // draw slider strip
+  // draw slider bar
   fill(255);
-  rect(820,155,140,5);
+  rect(820,155,140,3);
   // draw slider knob, its x-position varies linearly with E
-  ellipse( (820 + 140(E/maxE)) ,155,15,15);
+  ellipse( (float)(820 + 140*(E/maxE)) ,155,15,15);
   // display E field value
   text( "Electric field: " + String.format("%.2f",E) + " N/C", 820,50);
 }
@@ -222,11 +231,11 @@ public void displayBSlider()
   stroke(255);
   fill(0);
   rect(800,230,180,200);
-  // draw slider strip
+  // draw slider bar
   fill(255);
-  rect(820,365,140,5);
+  rect(820,365,140,3);
   // draw slider knob, its x-position varies linearly with B
-  ellipse( (890 + 70(B/maxB)) ,365,15,15);
+  ellipse( (float)(890 + 70*(B/maxB)) ,365,15,15);
   // display B field value
   text("Magnetic field: " + String.format("%.2f",B) + " T", 820,260);
 }
@@ -238,4 +247,3 @@ Ignore for now
 getCode()
 getMass()
 */
-
