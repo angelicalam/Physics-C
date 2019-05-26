@@ -1,34 +1,57 @@
+import de.bezier.guido.*;
 import java.lang.Math;
 
 // B, E, q, and m are in SI units unless otherwise stated
 
-double x;   // x-position of the particle
-double y;   // y-position of the particle
-double a;   // acceleration of the particle 
-double B;   // magnitude and direction of B field
-double E;   // magnitude of E field
-double q;   // magnitude and sign of charge
-double r;   // radius of circular motion
-double m;   // mass of the particle
+private double x;   // x-position of the particle
+private double y;   // y-position of the particle
+private double a;   // acceleration of the particle 
+private double B;   // magnitude and direction of B field
+private double E;   // magnitude of E field
+private double q;   // magnitude and sign of charge
+private double r;   // radius of circular motion
+private double m;   // mass of the particle
 
-final static double maxE = 10;  // maximum magnitude of E field
-final static double maxB = 1;   // maximum magnitude of B field
+final static double maxE = 2;  // maximum magnitude of E field
+final static double maxB = 2;  // maximum magnitude of B field
 
-boolean isRunning = false;  // particle only moves if isRunning
+private boolean isRunning = false;  // particle only moves if isRunning
 
 public void setup()
 {
   size(1000, 600);
   E = 0;
   B = 0;
-  q = 1;  // charge is always > 0
-  m = .01;
+  q = 1;
+  
+  Interactive.make(this);
+  
+  // 0.001 <= mass < .101
+  // allows for margin of error of 0.005
+  double[] masses = new double[4];
+  for(int i = 0; i < 4; i++) {
+    masses[i] = Math.random()/10 + 0.001;
+    for(int n = i-1; n >= 0; n--) {
+      if (Math.abs(masses[i] - masses[n]) < 0.005)
+      {
+        masses[i] = Math.random()/10 + 0.001;
+        n = i-1;
+      }
+    }
+  }
+  m = masses[(int)(Math.random()*4)];
+  
+  // initializes buttons for possible mass-to-charge ratios
+  MQButton ratio1 = new MQButton(820,280,60,60, masses[0], m/q);
+  MQButton ratio2 = new MQButton(820,360,60,60, masses[1], m/q);
+  MQButton ratio3 = new MQButton(900,280,60,60, masses[2], m/q);
+  MQButton ratio4 = new MQButton(900,360,60,60, masses[3], m/q);
 }
 
-double v;       // tangential velocity in circular motion
-double radian;  // for circular motion
-double t = 0;   // time counter for E field
-double t2 = 0;  // time counter for B field
+private double v;       // tangential velocity in circular motion
+private double radian;  // for circular motion
+private double t = 0;   // time counter for E field
+private double t2 = 0;  // time counter for B field
 
 public void draw()
 {
@@ -38,6 +61,8 @@ public void draw()
   displayBField();
   displayESlider();
   displayBSlider();
+  text("Choose the closest", 815,240);
+  text("mass-to-charge-ratio:", 815,260);
   
   fill(255);
   ellipse( (float)x, (float)y, 10,10);
@@ -49,14 +74,16 @@ public void draw()
     // no movement for E field = 0
     if (x < 420 && y == 300)
     {
-      // acceleration is x1000 smaller since 1000 = 1 meter
+      // acceleration is x100 smaller since 1000 = 1 meter
       // slows down the animation
       // t/frameRate aligns draw() with real time
       // 10 is initial x-position of particle
-      a = E*q/m;
+      a = (E*q/m) * 10;
       x = 10 + .5*(a)*(t/frameRate)*(t/frameRate);
       t++;
       // smooths transition from E field to B field
+      // particle will move backwards during transition
+      // if x > 420
       if (x > 420)
         x = 420;
     }
@@ -66,9 +93,9 @@ public void draw()
     {
       // 0.4 is separation between E field plates in meters
       // 1000 scales r from meters to program's dimensions
-      r = Math.sqrt( (2*E*.4*m)/(B*B*q) * 1000);
-      // velocity is x50 smaller to slow down animation
-      v = Math.sqrt( 2*E*q*.4 / m ) * 20;
+      r = Math.sqrt( (2*E*.4*m)/(B*B*q) ) * 1000;
+      // velocity is x10 smaller to slow down animation
+      v = Math.sqrt( 2*E*q*.4 / m ) * 100;
       // B field is out of the page
       // Center of circular motion is (420, 300 + r)
       // radian decreases linearly with time
@@ -95,8 +122,8 @@ public void draw()
     // constant velocity if there is no magnetic field
     else if (B == 0 && x >= 420)
     {
-      // velocity is x50 smaller
-      v = Math.sqrt( 2*E*q*0.4 / m ) * 20;
+      // velocity is x10 smaller
+      v = Math.sqrt( 2*E*q*0.4 / m ) * 100;
       x = x + (v)*(1/frameRate);
     }
     
@@ -106,7 +133,7 @@ public void draw()
       line(385,300,395,300);
       line(390,300,390,(float)y);
       line(385,(float)y,395,(float)y);
-      text(String.format("%.2f", 2*(r/1000)) + " m", 330,(float)y);
+      text(String.format("%.3f", 2*(r/1000)) + " m", 325,(float)y);
     }   
   }
   
@@ -191,8 +218,8 @@ public void displayBField()
 }
 
 // changes value of E and B
-double ESliderX = 820;
-double BSliderX = 890;
+private double ESliderX = 820;
+private double BSliderX = 890;
 public void mouseDragged()
 {
   if (mouseX > 819 && mouseX < 961 && mouseY > 45 && mouseY < 75)
@@ -220,7 +247,7 @@ public void displayESlider()
   // draw slider knob
   ellipse((float)ESliderX,60,15,15);
   // display E field value
-  text( "Electric field: " + String.format("%.2f",E) + " N/C", 815,40);
+  text( "Electric field: " + String.format("%.3f",E) + " N/C", 815,40);
 }
 
 // draws slider for B field magnitude and direction
@@ -234,12 +261,84 @@ public void displayBSlider()
   // draw slider knob
   ellipse((float)BSliderX,130,15,15);
   // display B field value
-  text("Magnetic field: " + String.format("%.2f",B) + " T", 815,110);
+  text("Magnetic field: " + String.format("%.3f",B) + " T", 815,110);
 }
 
-/*
-For later:
-m = Math.random() within some range
-q = Math.random() within some range
-user must find mass to charge ratio as is the case with a true mass spectrometer
-*/
+// draws options for mass-to-charge ratio
+// if user picks the correct one, then
+// a winning message is displayed
+// Uses Guido
+public class MQButton
+{
+  private float x, y, width, height;
+  private double MQ, trueMQ;
+  private boolean pressed;
+  
+  public MQButton(float xx, float yy, float ww, float hh, double mq, double tmq)
+  {
+    x = xx;
+    y = yy;
+    width = ww;
+    height = hh;
+    MQ = mq;
+    trueMQ = tmq;
+    pressed = false;
+    
+    Interactive.add(this);
+  }
+  
+  public void mousePressed()
+  {
+    pressed = true;
+  }
+  
+  public void draw()
+  {
+    fill(0);
+    if (pressed)
+    {
+      if (MQ == trueMQ)
+        displayWinningMessage();
+      else
+        displayLosingMessage();
+      fill(100);
+    }
+    rect(x,y,width,height);
+    fill(255);
+    textSize(14);
+    text(String.format("%.4f", MQ), (x + .1*width), (y + .45*height));
+    text("kg/C", (x + .25*width), (y + .8*height));
+  }
+  
+  public void displayWinningMessage()
+  {
+    stroke(255);
+    fill(0);
+    rect(200,100,600,400);
+    fill(255);
+    textSize(60);
+    text("Congrats!", 350,220);
+    text("You're a Winner!", 270,300);
+    textSize(36);
+    text("Refresh to play again.", 310,400);
+    textSize(14);
+    text("Mass-to-charge-ratio: " + String.format("%.4f", trueMQ) + " kg/C",
+         370,450);
+  }
+  
+  public void displayLosingMessage()
+  {
+    stroke(255);
+    fill(0);
+    rect(200,100,600,400);
+    fill(255);
+    textSize(60);
+    text("Congrats!", 350,220);
+    text("You're a Loser.", 280,300);
+    textSize(36);
+    text("Refresh to play again.", 310,400);
+    textSize(14);
+    text("Mass-to-charge-ratio: " + String.format("%.4f", trueMQ) + " kg/C",
+         370,450);
+  }
+}
