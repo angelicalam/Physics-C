@@ -1,7 +1,9 @@
 import java.lang.Math;
 
-double x;
-double y;
+// B, E, q, and m are in SI units unless otherwise stated
+
+double x;   // x-position of the particle
+double y;   // y-position of the particle
 double a;   // acceleration of the particle 
 double B;   // magnitude and direction of B field
 double E;   // magnitude of E field
@@ -12,18 +14,18 @@ double m;   // mass of the particle
 final static double maxE = 10;  // maximum magnitude of E field
 final static double maxB = 1;   // maximum magnitude of B field
 
-boolean isRunning = false;  //particle only moves if isRunning
+boolean isRunning = false;  // particle only moves if isRunning
 
 public void setup()
 {
-  size(1000, 800);
+  size(1000, 600);
   E = 0;
   B = 0;
-  q = 1;
-  m = .001; // may remove later
+  q = 1;  // charge is always > 0
+  m = .01;
 }
 
-double v;       // for proportional incrementation of radian
+double v;       // tangential velocity in circular motion
 double radian;  // for circular motion
 double t = 0;   // time counter for E field
 double t2 = 0;  // time counter for B field
@@ -45,7 +47,7 @@ public void draw()
     // constant acceleration in the x-direction
     // for a uniform electric field
     // no movement for E field = 0
-    if (x < 420 && y == 300 && E!= 0)
+    if (x < 420 && y == 300)
     {
       // acceleration is x1000 smaller since 1000 = 1 meter
       // slows down the animation
@@ -62,25 +64,25 @@ public void draw()
     // circular motion in a uniform magnetic field
     else if (x >= 420 && B != 0)
     {
-      // 0.4 is separation between the E field plates
+      // 0.4 is separation between E field plates in meters
       // 1000 scales r from meters to program's dimensions
       r = Math.sqrt( (2*E*.4*m)/(B*B*q) * 1000);
-      // velocity is x100 smaller to slow down animation
-      v = Math.sqrt( 2*E*q*.4 / m ) * 10;
+      // velocity is x50 smaller to slow down animation
+      v = Math.sqrt( 2*E*q*.4 / m ) * 20;
       // B field is out of the page
       // Center of circular motion is (420, 300 + r)
-      // radians decrease linearly with time
+      // radian decreases linearly with time
       if (B > 0)
       {
-        radian = radian - (v/r)*(t2/frameRate);
+        radian = (Math.PI/2) - (v/r)*(t2/frameRate);
         y = (300 + r) - (r * Math.sin(radian));
       }
       // B field is into the page
       // Center of circular motion is (420, 300 - r)
-      // radians increase linearly with time
+      // radian increases linearly with time
       else
       {
-        radian = radian + (v/r)*(t2/frameRate);
+        radian = ((-1)*Math.PI/2) + (v/r)*(t2/frameRate);
         y = (300 - r) + (r * Math.sin(radian));
       }
       x = 420 + (r * Math.cos(radian));
@@ -104,7 +106,7 @@ public void draw()
       line(385,300,395,300);
       line(390,300,390,(float)y);
       line(385,(float)y,395,(float)y);
-      text(String.format("%.2f", 2*(r/1000)) + " m", 350,(float)(y/2));
+      text(String.format("%.2f", 2*(r/1000)) + " m", 330,(float)y);
     }   
   }
   
@@ -117,20 +119,21 @@ public void draw()
 // sets isRunning when the reset button is pressed
 public void mousePressed()
 {
-  if (mouseX > 875 && mouseX < 925 && mouseY > 675 && mouseY < 725) // change if neccessary
+  if (mouseX > 860 && mouseX < 900 && mouseY > 540 && mouseY < 580)
     isRunning = !isRunning;
 }
 
 // draws reset button
 public void resetButton()
 {
-  text("Press to START.", 875,600);
-  text("Press again to RESET.", 875,640);
+  textSize(14);
+  text("Press to START.", 820,500);
+  text("Press again to RESET.", 820,520);
   if (isRunning)
     fill(255,0,0);  // button is red when the simulation is running
   else
     fill(0,255,0);  // button is green when the simulation is resting
-  rect(875,675,50,50);
+  rect(860,540,40,40);
 }
 
 // resets simulation
@@ -140,10 +143,6 @@ public void reset()
   y = 300;
   t = 0;
   t2 = 0;
-  if (B > 0)
-    radian = Math.PI/2;
-  else
-    radian = (-1)*Math.PI/2;
 }
 
 // draws plate separating the electric field and magnetic field
@@ -151,30 +150,36 @@ public void plate()
 {
   background(0);
   fill(255);
-  rect(400,0,20,280);
-  rect(400,320,20,280);
+  rect(410,0,10,285);
+  rect(410,315,10,285);
 }
 
-// draws E field    delete this part of the comment later: make lines light grey, white clashes with the particle color
+// draws E field
 public void displayEField()
 {
-  stroke(200);
-  for(int n = 100; n < 1000; n += 100)
-    line(0,n,400,n);
+  if (E != 0)
+  {
+    for(int n = 50; n < 600; n += 100) {
+      stroke(255);
+      line(0, n, 410, n);
+      line(400, n-10, 410, n);
+      line(400, n+10, 410, n);
+    }
+  }
 }
 
-// draws B field    delete this part of the comment later: same as above, make markings grey
+// draws B field
 public void displayBField()
 {
-  stroke(200);
-  for(int r = 100; r < 1000; r += 100) {
+  stroke(255);
+  for(int r = 50; r < 600; r += 100) {
     for(int c = 470; c < 800; c += 100) {
-      fill(200);
       if (B > 0)
       {
-        ellipse(c,r,10,10);
         fill(0);
         ellipse(c,r,15,15);
+        fill(255);
+        ellipse(c,r,7,7);
       }
       else if (B < 0)
       {
@@ -186,40 +191,36 @@ public void displayBField()
 }
 
 // changes value of E and B
-double delta;
+double ESliderX = 820;
+double BSliderX = 890;
 public void mouseDragged()
 {
-  // can't allow E to affect r and v when particle is in B field, so x < 400
-  if (mouseX > 805 && mouseX < 975 && mouseY > 140 && mouseY < 170 && x < 400)
+  if (mouseX > 819 && mouseX < 961 && mouseY > 45 && mouseY < 75)
   {
-    if (mouseX > pmouseX && E < maxE)
-      E = E + 0.05;
-    else if (mouseX < pmouseX && E > 0)
-      E = E - 0.05;
+    // can't allow E to affect r and v when particle is in B field
+    if (x < 420)
+    {
+      ESliderX = mouseX;
+      E = ((ESliderX - 820)/140) * maxE;
+    }
   }
-  else if (mouseX > 805 && mouseX < 975 && mouseY > 350 && mouseY < 380)
+  else if (mouseX > 819 && mouseX < 961 && mouseY > 115 && mouseY < 145)
   {
-    if (mouseX > pmouseX && B < maxB)
-      B = B + 0.01;
-    else if (mouseX < pmouseX && B > (-1)*maxB)
-      B = B - 0.01;
+    BSliderX = mouseX;
+    B = ((BSliderX - 890)/70) * maxB;
   }
 }
 
 // draws slider for E field magnitude
 public void displayESlider()
 {
-  // draw border
-  stroke(255);
-  fill(0);
-  rect(800,20,180,200);
   // draw slider bar
   fill(255);
-  rect(820,155,140,3);
-  // draw slider knob, its x-position varies linearly with E
-  ellipse( (float)(820 + 140*(E/maxE)) ,155,15,15);
+  rect(820,60,140,1);
+  // draw slider knob
+  ellipse((float)ESliderX,60,15,15);
   // display E field value
-  text( "Electric field: " + String.format("%.2f",E) + " N/C", 820,50);
+  text( "Electric field: " + String.format("%.2f",E) + " N/C", 815,40);
 }
 
 // draws slider for B field magnitude and direction
@@ -227,23 +228,18 @@ public void displayESlider()
 // for negative values of B, the B field is directed into the page
 public void displayBSlider()
 {
-  // draw border
-  stroke(255);
-  fill(0);
-  rect(800,230,180,200);
   // draw slider bar
   fill(255);
-  rect(820,365,140,3);
-  // draw slider knob, its x-position varies linearly with B
-  ellipse( (float)(890 + 70*(B/maxB)) ,365,15,15);
+  rect(820,130,140,1);
+  // draw slider knob
+  ellipse((float)BSliderX,130,15,15);
   // display B field value
-  text("Magnetic field: " + String.format("%.2f",B) + " T", 820,260);
+  text("Magnetic field: " + String.format("%.2f",B) + " T", 815,110);
 }
 
 /*
-Ignore for now
---------------
-2d array: A-Z and masses
-getCode()
-getMass()
+For later:
+m = Math.random() within some range
+q = Math.random() within some range
+user must find mass to charge ratio as is the case with a true mass spectrometer
 */
