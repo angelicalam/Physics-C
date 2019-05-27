@@ -63,8 +63,8 @@ public void draw()
   displayBField();
   displayESlider();
   displayBSlider();
-  text("Choose the closest", 815,240);
-  text("mass-to-charge-ratio:", 815,260);
+  text("Choose the closest", 820,240);
+  text("mass-to-charge-ratio:", 820,260);
   
   fill(255);
   ellipse( (float)x, (float)y, 10,10);
@@ -181,6 +181,9 @@ public void plate()
   fill(255);
   rect(410,0,10,285);
   rect(410,315,10,285);
+  line(1,585,1,595);
+  line(409,585,409,595);
+  line(1,590,409,590);
 }
 
 // draws E field
@@ -249,7 +252,7 @@ public void displayESlider()
   // draw slider knob
   ellipse((float)ESliderX,60,15,15);
   // display E field value
-  text( "Electric field: " + nf((float)E,0,3) + " N/C", 815,40);
+  text( "Electric field: " + nf((float)E,0,3) + " N/C", 820,40);
 }
 
 // draws slider for B field magnitude and direction
@@ -263,7 +266,7 @@ public void displayBSlider()
   // draw slider knob
   ellipse((float)BSliderX,130,15,15);
   // display B field value
-  text("Magnetic field: " + nf((float)B,0,3) + " T", 815,110);
+  text("Magnetic field: " + nf((float)B,0,3) + " T", 820,110);
 }
 
 // draws options for mass-to-charge ratio
@@ -308,7 +311,7 @@ public class MQButton
     rect(x,y,width,height);
     fill(255);
     textSize(14);
-    text(nf((float)MQ,0,4), (x + .1*width), (y + .45*height));
+    text(nf((float)MQ,0,4), (x + .25*width), (y + .45*height));
     text("kg/C", (x + .25*width), (y + .8*height));
   }
   
