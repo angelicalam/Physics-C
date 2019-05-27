@@ -184,6 +184,7 @@ public void plate()
   line(1,585,1,595);
   line(409,585,409,595);
   line(1,590,409,590);
+  text("0.4 m",200,586);
 }
 
 // draws E field
@@ -311,7 +312,7 @@ public class MQButton
     rect(x,y,width,height);
     fill(255);
     textSize(14);
-    text(nf((float)MQ,0,4), (x + .25*width), (y + .45*height));
+    text(nf((float)MQ,0,4), (x + .2*width), (y + .45*height));
     text("kg/C", (x + .25*width), (y + .8*height));
   }
   
