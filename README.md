@@ -10,5 +10,7 @@ Upon choosing the correct closest mass-to-charge ratio, a winning message will b
 
 This simulation is inspired by the physics concepts behind a mass spectrometer.
 
+https://angelicalam.github.io/Physics-C/ 
+
 To make this simulation, we used the popular visual programming language, Processing,
 primarily because processing.js makes our code suitable for a webpage.
