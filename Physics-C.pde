@@ -27,7 +27,9 @@ public void setup()
   Interactive.make(this);
   
   // 0.001 <= mass < .101
-  // allows for margin of error of 0.005
+  // allows for margin of error of 0.005,
+  // more than enough to account for 
+  // rounding errors and Processing's division errors
   double[] masses = new double[4];
   for(int i = 0; i < 4; i++) {
     masses[i] = Math.random()/10 + 0.001;
