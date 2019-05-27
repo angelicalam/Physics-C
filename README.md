@@ -1,27 +1,14 @@
-Code Cracking with a Mass Spectrometer
+Can You Find the Mass-to-Charge Ratio?
 ========================================
 
-You will be given a series of particles of unknown masses.
-The mass of each particle corresponds with the atomic mass of an element in the periodic table.
-Use the chemical symbol of the element to crack the code.
-
-E.g., a particle of mass 1.0079E-3 kg corresponds to "H" (Hydrogen).
-
-=========================================
-
-In our mass spectrometer simulation, the particle starts from rest. 
-You can determine the magnitude and sign of the particle's charge
-as well as the magnitude and direction of the electric field and magnetic field.
+You are given a positively-charged particle of unknown mass.
+The electric field and magnetic field are adjustable.
+The electric field is in the plane of the page while the magnetic field is perpendicular to the plane of the page.
 Ignore gravitational effects.
+Press the green button to release the particle. Press the button again to reset the simulation.
+Upon choosing the correct closest mass-to-charge ratio, a winning message will be displayed.
 
-For an actual mass spectometer, the precise charge of each particle is unknown;
-instead, one determines the mass-to-charge ratio. Additionally, not all the particles
-are moles of one element. Our mass spectometer simulation likely differs from an
-actual mass spectometer in many other ways, but we feel the simulation is sufficient
-for a Physics demonstration.
+This simulation is inspired by the physics concepts behind a mass spectrometer.
 
-Enjoy!
-
-
-P.S. We are terrible, inexperienced programmers using Processing 
-(primarily because processing.js makes our code suitable for a webpage).
+To make this simulation, we used the popular visual programming language, Processing,
+primarily because processing.js makes our code suitable for a webpage.
