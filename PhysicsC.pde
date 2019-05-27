@@ -112,7 +112,7 @@ public void draw()
       else
       {
         radian = ((-1)*Math.PI/2) + (v/r)*(t2/frameRate);
-        y = (300 - r) + (r * Math.sin(radian));
+        y = (300 - r) - (r * Math.sin(radian));
       }
       x = 420 + (r * Math.cos(radian));
       t2++;
@@ -135,7 +135,7 @@ public void draw()
       line(385,300,395,300);
       line(390,300,390,(float)y);
       line(385,(float)y,395,(float)y);
-      text(String.format("%.3f", 2*(r/1000)) + " m", 325,(float)y);
+      text(nf( (float)( 2*(r/1000) ), 0,3) + " m", 325,(float)y);
     }   
   }
   
@@ -249,7 +249,7 @@ public void displayESlider()
   // draw slider knob
   ellipse((float)ESliderX,60,15,15);
   // display E field value
-  text( "Electric field: " + String.format("%.3f",E) + " N/C", 815,40);
+  text( "Electric field: " + nf((float)E,0,3) + " N/C", 815,40);
 }
 
 // draws slider for B field magnitude and direction
@@ -263,7 +263,7 @@ public void displayBSlider()
   // draw slider knob
   ellipse((float)BSliderX,130,15,15);
   // display B field value
-  text("Magnetic field: " + String.format("%.3f",B) + " T", 815,110);
+  text("Magnetic field: " + nf((float)B,0,3) + " T", 815,110);
 }
 
 // draws options for mass-to-charge ratio
@@ -308,7 +308,7 @@ public class MQButton
     rect(x,y,width,height);
     fill(255);
     textSize(14);
-    text(String.format("%.4f", MQ), (x + .1*width), (y + .45*height));
+    text(nf((float)MQ,0,4), (x + .1*width), (y + .45*height));
     text("kg/C", (x + .25*width), (y + .8*height));
   }
   
@@ -324,10 +324,10 @@ public class MQButton
     textSize(36);
     text("Refresh to play again.", 310,400);
     textSize(14);
-    text("Mass-to-charge-ratio: " + String.format("%.4f", trueMQ) + " kg/C",
+    text("Mass-to-charge-ratio: " + nf((float)trueMQ,0,4) + " kg/C",
          370,450);
   }
-  
+ 
   public void displayLosingMessage()
   {
     stroke(255);
@@ -340,7 +340,7 @@ public class MQButton
     textSize(36);
     text("Refresh to play again.", 310,400);
     textSize(14);
-    text("Mass-to-charge-ratio: " + String.format("%.4f", trueMQ) + " kg/C",
+    text("Mass-to-charge-ratio: " + nf((float)trueMQ,0,4) + " kg/C",
          370,450);
   }
 }
