@@ -14,3 +14,6 @@ https://angelicalam.github.io/Physics-C/
 
 To make this simulation, we used the popular visual programming language, Processing,
 primarily because processing.js makes our code suitable for a webpage.
+See http://processingjs.org/articles/p5QuickStart.html#quickstart for more info or 
+ask the AP Computer Science teacher, Mr. Simon. Guido is a GUI library for Processing 
+and is also compatible with Javascript.
